@@ -1,0 +1,105 @@
+/* styles/globals.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+body {
+  @apply bg-white;
+  background-image: linear-gradient(90deg, rgba(255, 192, 203, 0.5) 50%, transparent 50%),
+                    linear-gradient(rgba(255, 192, 203, 0.5) 50%, transparent 50%);
+  background-size: 30px 30px;
+}
+.image-container {
+  @apply flex justify-center;
+}
+.image-placeholder {
+  @apply w-full max-w-lg;
+}
+
+.name-image {
+  @apply w-1/2 mx-auto;
+}
+.hamburger-menu {
+  @apply fixed top-2 left-2 z-50 cursor-pointer;
+}
+.button-icon {
+  @apply w-8 h-8 transition-transform;
+  transform: rotate(30deg);
+}
+.nav-menu {
+  @apply fixed top-[-100%] left-0 w-full bg-white bg-opacity-95 transition-all duration-300 shadow-md z-40;
+}
+.nav-menu.active {
+  @apply top-0;
+}
+.nav-menu ul {
+  @apply list-none p-0 ml-16;
+}
+.nav-menu ul li {
+  @apply py-4 px-6 border-b border-gray-200;
+}
+.nav-menu ul li:last-child {
+  @apply border-none;
+}
+.nav-menu ul li a {
+  @apply text-gray-800 no-underline text-lg block;
+}
+
+/*new*/
+/* Custom styles */
+/* .grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.grid-cols-1 {
+  grid-template-columns: 1fr;
+}
+
+.md\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.lg\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.h-64 {
+  height: 16rem;
+} */
+
+/* New masonry grid styles */
+.masonry-grid {
+  display: flex;
+  margin-left: -8px; /* gutter size offset */
+  width: auto;
+}
+
+.masonry-grid_column {
+  padding-left: 8px; /* gutter size */
+  background-clip: padding-box;
+}
+
+.masonry-item {
+  margin-bottom: 8px;
+}
+
+/* Responsive column config */
+@media (min-width: 400px) {
+  .masonry-grid {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 800px) {
+  .masonry-grid {
+    column-count: 3;
+  }
+}
+
+@media (min-width: 1200px) {
+  .masonry-grid {
+    column-count: 4;
+  }
+}
