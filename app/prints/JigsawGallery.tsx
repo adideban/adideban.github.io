@@ -1,7 +1,7 @@
 // JigsawGallery.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Masonry from "react-masonry-css";
 import Link from "next/link";
@@ -11,7 +11,7 @@ interface ImageInfo {
   width: number;
   height: number;
   variants: string[];
-  aspectRatio: number; // Add this line
+  aspectRatio: number; 
 }
 
 const getImageDimensions = (filename: string): Promise<{ width: number; height: number }> => {
@@ -38,8 +38,19 @@ const groupImages = (filenames: string[]): Record<string, string[]> => {
 
 export default function JigsawGallery({ filenames }: { filenames: string[] }) {
   const [images, setImages] = useState<ImageInfo[]>([]);
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
-  const [hoveredVariants, setHoveredVariants] = useState<Record<string, string | undefined>>({});
+  const [displayedVariants, setDisplayedVariants] = useState<Record<string, string>>({});
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.matchMedia("(max-width: 768px)").matches);
+    };
+
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const loadImages = async () => {
@@ -50,20 +61,20 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
           src: `/prints/${variants[0]}`,
           variants,
           ...dimensions,
-          aspectRatio: dimensions.width / dimensions.height, // Add this line
+          aspectRatio: dimensions.width / dimensions.height,
         };
       });
 
       const loadedImages = await Promise.all(imagePromises);
       setImages(loadedImages);
       
-      // Initialize selected variants
+      // Initialize displayed variants
       const initialVariants: Record<string, string> = {};
       loadedImages.forEach(image => {
         const [baseName] = image.src.split('/').pop()!.split('-');
         initialVariants[baseName] = image.src;
       });
-      setSelectedVariants(initialVariants);
+      setDisplayedVariants(initialVariants);
     };
 
     loadImages();
@@ -75,17 +86,9 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
     700: 1
   };
 
-  const handleVariantChange = (baseName: string, newVariant: string) => {
-    setSelectedVariants(prev => ({ ...prev, [baseName]: `/prints/${newVariant}` }));
-  };
-
-  const handleVariantHover = (baseName: string, newVariant: string) => {
-    setHoveredVariants(prev => ({ ...prev, [baseName]: `/prints/${newVariant}` }));
-  };
-
-  const handleVariantLeave = (baseName: string) => {
-    setHoveredVariants(prev => ({ ...prev, [baseName]: undefined }));
-  };
+  const handleVariantInteraction = useCallback((baseName: string, newVariant: string) => {
+    setDisplayedVariants(prev => ({ ...prev, [baseName]: `/prints/${newVariant}` }));
+  }, []);
 
   return (
     <Masonry
@@ -96,48 +99,66 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
       {images.map((image, index) => {
         const [baseName] = image.src.split('/').pop()!.split('-');
         return (
-          <div key={index} className="masonry-item mb-8 bg-gray-100 p-4 rounded-lg">
-            <Link href={`/print/${baseName}?color=${selectedVariants[baseName]?.split('/').pop()?.split('-')[1].split('.')[0] || '1'}`}>
-              <div style={{ position: 'relative', paddingBottom: `${(1 / image.aspectRatio) * 100}%` }}>
-                <Image
-                  src={hoveredVariants[baseName] || selectedVariants[baseName] || image.src}
-                  alt={`Print ${baseName}`}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-md shadow-md cursor-pointer"
-                />
-              </div>
-            </Link>
-            {image.variants.length > 1 && (
-              <div className="flex mt-4 justify-center">
-                {image.variants.map((variant, vIndex) => (
-                  <div
-                    key={vIndex}
-                    className={`w-12 h-12 mx-1 border-2 rounded-md overflow-hidden ${
-                      selectedVariants[baseName] === `/prints/${variant}` ? 'border-black' : 'border-gray-300'
-                    }`}
-                    onMouseEnter={() => handleVariantHover(baseName, variant)}
-                    onMouseLeave={() => handleVariantLeave(baseName)}
-                    onClick={() => handleVariantChange(baseName, variant)}
-                  >
-                    <div style={{ position: 'relative', paddingBottom: '100%' }}>
-                      <Image
-                        src={`/prints/${variant}`}
-                        alt={`Variant ${vIndex + 1}`}
-                        layout="fill"
-                        objectFit="cover"
-                        className="cursor-pointer"
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-            <button className="mt-4 w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">
-              Add to Cart
-            </button>
+          <div key={index} className="retro-card">
+            <table cellSpacing="0" cellPadding="5" border={1} bgcolor="#FFFFFF" width="100%">
+              <tbody>
+                <tr>
+                  <td align="center">
+                    <Link href={`/print/${baseName}?color=${displayedVariants[baseName]?.split('/').pop()?.split('-')[1].split('.')[0] || '1'}`}>
+                      <div style={{ position: 'relative', paddingBottom: `${(1 / image.aspectRatio) * 100}%` }}>
+                        <Image
+                          src={displayedVariants[baseName] || image.src}
+                          alt={`Print ${baseName}`}
+                          layout="fill"
+                          objectFit="contain"
+                          className="retro-image"
+                        />
+                      </div>
+                    </Link>
+                  </td>
+                </tr>
+                {image.variants.length > 1 && (
+                  <tr>
+                    <td align="center">
+                      <table cellSpacing="2" cellPadding="0" border={0}>
+                        <tbody>
+                          <tr>
+                            {image.variants.map((variant, vIndex) => (
+                              <td key={vIndex}>
+                                <div
+                                  className={`retro-variant ${
+                                    displayedVariants[baseName] === `/prints/${variant}` ? 'selected' : ''
+                                  } ${isMobile ? 'mobile' : 'desktop'}`}
+                                  onMouseEnter={() => !isMobile && handleVariantInteraction(baseName, variant)}
+                                  onClick={() => isMobile && handleVariantInteraction(baseName, variant)}
+                                >
+                                  <Image
+                                    src={`/prints/${variant}`}
+                                    alt={`Variant ${vIndex + 1}`}
+                                    width={30}
+                                    height={30}
+                                    className="cursor-pointer"
+                                  />
+                                </div>
+                              </td>
+                            ))}
+                          </tr>
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                )}
+                <tr>
+                  <td align="center">
+                    <button className="retro-button">
+                      Add to Cart
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-        )
+        );
       })}
     </Masonry>
   );

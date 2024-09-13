@@ -103,3 +103,50 @@ body {
     column-count: 4;
   }
 }
+.retro-card {
+  font-family: Arial, sans-serif;
+  background-color: #FFFFCC;
+  border: 1px solid #000000;
+  margin-bottom: 20px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+}
+
+.retro-image {
+  border: 1px solid #000000;
+  background-color: #FFFFFF;
+}
+
+.retro-variant {
+  border: 1px solid #CCCCCC;
+  padding: 2px;
+  cursor: pointer;
+}
+
+.retro-variant.selected {
+  border: 2px solid #FF0000;
+}
+
+.retro-button {
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #3366CC;
+  border: 1px solid #000000;
+  padding: 2px 5px;
+  cursor: pointer;
+  margin-top: 5px;
+}
+
+.retro-button:hover {
+  background-color: #6699FF;
+}
+@media (hover: hover) and (pointer: fine) {
+  .retro-variant.desktop:hover {
+    border-color: #FF0000;
+  }
+}
+
+.retro-variant.mobile {
+  cursor: pointer;
+}
