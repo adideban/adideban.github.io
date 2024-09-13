@@ -11,6 +11,7 @@ interface ImageInfo {
   width: number;
   height: number;
   variants: string[];
+  aspectRatio: number; // Add this line
 }
 
 const getImageDimensions = (filename: string): Promise<{ width: number; height: number }> => {
@@ -48,7 +49,8 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
         return {
           src: `/prints/${variants[0]}`,
           variants,
-          ...dimensions
+          ...dimensions,
+          aspectRatio: dimensions.width / dimensions.height, // Add this line
         };
       });
 
@@ -96,14 +98,15 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
         return (
           <div key={index} className="masonry-item mb-8 bg-gray-100 p-4 rounded-lg">
             <Link href={`/print/${baseName}?color=${selectedVariants[baseName]?.split('/').pop()?.split('-')[1].split('.')[0] || '1'}`}>
-              <Image
-                src={hoveredVariants[baseName] || selectedVariants[baseName] || image.src}
-                alt={`Print ${baseName}`}
-                width={image.width}
-                height={image.height}
-                layout="responsive"
-                className="rounded-md shadow-md cursor-pointer"
-              />
+              <div style={{ position: 'relative', paddingBottom: `${(1 / image.aspectRatio) * 100}%` }}>
+                <Image
+                  src={hoveredVariants[baseName] || selectedVariants[baseName] || image.src}
+                  alt={`Print ${baseName}`}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-md shadow-md cursor-pointer"
+                />
+              </div>
             </Link>
             {image.variants.length > 1 && (
               <div className="flex mt-4 justify-center">
@@ -117,13 +120,15 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
                     onMouseLeave={() => handleVariantLeave(baseName)}
                     onClick={() => handleVariantChange(baseName, variant)}
                   >
-                    <Image
-                      src={`/prints/${variant}`}
-                      alt={`Variant ${vIndex + 1}`}
-                      width={48}
-                      height={48}
-                      className="object-cover cursor-pointer"
-                    />
+                    <div style={{ position: 'relative', paddingBottom: '100%' }}>
+                      <Image
+                        src={`/prints/${variant}`}
+                        alt={`Variant ${vIndex + 1}`}
+                        layout="fill"
+                        objectFit="cover"
+                        className="cursor-pointer"
+                      />
+                    </div>
                   </div>
                 ))}
               </div>
