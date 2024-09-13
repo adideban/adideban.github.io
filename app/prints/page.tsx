@@ -14,7 +14,7 @@ export default function Prints() {
 
   return (
     <div className="flex min-h-screen">
-      <nav className="fixed left-0 w-1/6 flex flex-col justify-center h-screen pr-4 bg-transparent">
+      <nav className="fixed left-0 w-1/6 flex flex-col justify-center h-screen pl-4 bg-transparent">
         <Link href="/" className="mb-6 text-blue-600 underline hover:text-blue-800">Home</Link>
         <Link href="/prints" className="mb-6 text-blue-600 underline hover:text-blue-800">Prints</Link>
         <Link href="/#creations" className="mb-6 text-blue-600 underline hover:text-blue-800">Creations</Link>
