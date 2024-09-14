@@ -1,43 +1,43 @@
-import fs from "fs";
-import path from "path";
-import JigsawGallery from "./JigsawGallery";
+'use client';
+
+import { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import RotatingIcon from '../components/RotatingIcon';
-import { getRandomIcons } from '../utils/iconUtils';
+import JigsawGallery from "./JigsawGallery";
+import DynamicIconPlacement from '../components/DynamicIconPlacement';
 
 export default function Prints() {
-  const getImageFilenames = () => {
-    const printsDirectory = path.join(process.cwd(), "public/prints");
-    return fs.readdirSync(printsDirectory);
-  };
+  const mainRef = useRef<HTMLElement>(null);
+  const [filenames, setFilenames] = useState<string[]>([]);
 
-  const filenames = getImageFilenames();
-  const icons = getRandomIcons(5);
+  useEffect(() => {
+    async function fetchFilenames() {
+      const response = await fetch('/api/prints');
+      const data = await response.json();
+      setFilenames(data);
+    }
+    fetchFilenames();
+  }, []);
 
   return (
     <div className="relative min-h-screen">
-      <nav className="fixed left-0 w-1/6 flex flex-col justify-center h-screen pl-4 bg-transparent z-10">
-        <Link href="/" className="mb-6 text-blue-600 underline hover:text-blue-800">Home</Link>
+      <nav className="fixed left-0 top-0 w-64 h-full flex flex-col justify-center pl-8 bg-transparent z-10">
+      <Link href="/" className="mb-6 text-blue-600 underline hover:text-blue-800">Home</Link>
         <Link href="/prints" className="mb-6 text-blue-600 underline hover:text-blue-800">Prints</Link>
         <Link href="/#creations" className="mb-6 text-blue-600 underline hover:text-blue-800">Creations</Link>
         <Link href="/#photos" className="mb-6 text-blue-600 underline hover:text-blue-800">Photos</Link>
         <Link href="/#about" className="mb-6 text-blue-600 underline hover:text-blue-800">About</Link>
         <Link href="/#contact" className="mb-6 text-blue-600 underline hover:text-blue-800">Contact</Link>
       </nav>
-      <main className="w-5/6 mx-auto min-h-screen px-8">
-        <header className="relative mb-8">
+      <main ref={mainRef} className="w-5/6 mx-auto min-h-screen px-8">
+        <header className="text-center mb-8 relative">
           <Image src="/prints.png" alt="PRINTS" width={300} height={100} className="mx-auto" />
-          <RotatingIcon src={icons[0]} alt="Random Icon 1" className="absolute top-0 left-1/4 -translate-x-1/2" />
-          <RotatingIcon src={icons[1]} alt="Random Icon 2" className="absolute bottom-0 right-1/4 translate-x-1/2" />
         </header>
         <div className="relative">
           <JigsawGallery filenames={filenames} />
-          <RotatingIcon src={icons[2]} alt="Random Icon 3" className="absolute -top-8 -left-8" />
-          <RotatingIcon src={icons[3]} alt="Random Icon 4" className="absolute -bottom-8 -right-8" />
-          <RotatingIcon src={icons[4]} alt="Random Icon 5" className="absolute bottom-1/4 left-1/3" />
         </div>
+        <DynamicIconPlacement containerRef={mainRef} numIcons={5} />
       </main>
     </div>
   );
-}
+}   

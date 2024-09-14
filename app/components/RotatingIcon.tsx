@@ -6,10 +6,11 @@ interface RotatingIconProps {
   src: string;
   alt: string;
   className?: string;
-  size : number;
+  size?: number;
+  style?: React.CSSProperties;
 }
 
-export default function RotatingIcon({ src, alt, className = '', size = 70 }: RotatingIconProps) {
+export default function RotatingIcon({ src, alt, className = '', size = 70, style = {} }: RotatingIconProps) {
   const [isRotated, setIsRotated] = useState(false);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function RotatingIcon({ src, alt, className = '', size = 70 }: Ro
     <div 
       className={`absolute ${className}`} 
       style={{ 
+        ...style,
         transform: isRotated ? 'rotate(30deg)' : 'rotate(0deg)'
       }}
     >
