@@ -18,8 +18,16 @@ export default function Home() {
       <main className="min-h-screen p-8">
         <header className="relative mb-8">
           <img src="yarn_name.png" alt="ARIANA DIDEBAN" className='name-image w-full max-w-3xl mx-auto' />
-          <RotatingIcon src={icons[0]} alt="Random Icon 1" className="absolute top-0 left-1/4 -translate-x-1/2" />
-          <RotatingIcon src={icons[1]} alt="Random Icon 2" className="absolute top-1/4 right-1/4 translate-x-1/2" />
+          <RotatingIcon 
+            src={icons[0]} 
+            alt="Random Icon 1" 
+            className="absolute top-0 left-0 transform -translate-x-1/2"
+          />
+          <RotatingIcon 
+            src={icons[1]} 
+            alt="Random Icon 2" 
+            className="absolute top-1/4 right-0 transform translate-x-1/2"
+          />
         </header>
         <div className="flex justify-center relative">
           <div className="image-container relative">
