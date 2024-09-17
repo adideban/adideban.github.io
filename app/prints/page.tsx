@@ -28,8 +28,16 @@ export default function Prints() {
       <main className="w-5/6 mx-auto min-h-screen px-8">
         <header className="relative mb-8">
           <Image src="/prints.png" alt="PRINTS" width={300} height={100} className="mx-auto" />
-          <RotatingIcon src={icons[0]} alt="Random Icon 1" className="absolute top-0 left-1/4 -translate-x-1/2" />
-          <RotatingIcon src={icons[1]} alt="Random Icon 2" className="absolute bottom-0 right-1/4 translate-x-1/2" />
+          <RotatingIcon 
+            src={icons[0]} 
+            alt="Random Icon 1" 
+            className="absolute top-0 left-0 transform -translate-x-1/2"
+          />
+          <RotatingIcon 
+            src={icons[1]} 
+            alt="Random Icon 2" 
+            className="absolute top-1/4 right-0 transform translate-x-1/2"
+          />
         </header>
         <div className="relative">
           <JigsawGallery filenames={filenames} />
