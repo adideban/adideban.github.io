@@ -2,7 +2,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import styles from './Navbar.module.css';
+import styles from './navbar.module.css';
 
 const Navbar = () => {
   const navItems = [
