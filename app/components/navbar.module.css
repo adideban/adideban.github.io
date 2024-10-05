@@ -1,0 +1,30 @@
+/* components/Navbar.module.css */
+
+.imageContainer {
+    position: relative;
+    height: 40px; /* Fixed height */
+    width: auto; /* Allow width to be dynamic */
+    display: flex;
+    justify-content: flex-start; /* Left-align images */
+    align-items: center; /* Vertically center the image */
+    margin-bottom: 1.5rem; /* Spacing between items */
+  }
+  
+  .image {
+    object-fit: contain; /* Maintain aspect ratio */
+    height: 100%; /* Full height of container */
+    width: auto; /* Allow width to adjust based on aspect ratio */
+    max-width: 160px; /* Limit maximum width to prevent overly wide images */
+    cursor: pointer;
+  }
+  
+  /* Navbar styling for mobile responsiveness */
+  @media (max-width: 768px) {
+    .imageContainer {
+      height: 20px; /* Slightly smaller for mobile */
+    }
+    
+    .image {
+      max-width: 120px; /* Smaller max-width for mobile */
+    }
+  }
