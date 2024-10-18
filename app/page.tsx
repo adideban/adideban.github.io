@@ -39,7 +39,7 @@ export default function Home() {
         <div className="flex justify-center relative">
           <div className="image-container relative">
             <Image 
-              src="/prints/cake_cleaned-1.png" 
+              src="/cake_cleaned-1.png" 
               alt="Artwork" 
               width={800} 
               height={800} 
