@@ -28,27 +28,34 @@ const Navbar = () => {
 
   if (isMobile) {
     return (
-      <nav className="fixed top-0 left-0 w-full flex justify-around items-center h-16 bg-white z-10 shadow-md">
-        {navItems.map((item, index) => (
-          <React.Fragment key={item.name}>
-            <Link href={item.href} className="hover:text-blue-800">
-              <Image
-                src={`/${item.name.toLowerCase()}.png`}
-                alt={item.name}
-                width={80}
-                height={20}
-                className={styles.mobileImage}
-              />
-            </Link>
-            {index < navItems.length - 1 && (
-              <RotatingIcon src="/icons/bow_yarn-1.png" alt="Separator" size={30} />
-            )}
-          </React.Fragment>
-        ))}
+      <nav className="fixed top-0 left-0 w-full flex items-center h-16 bg-white z-10 shadow-md">
+        <div className="flex justify-between items-center w-full px-4">
+          {navItems.map((item, index) => (
+            <React.Fragment key={item.name}>
+              <Link href={item.href} className="hover:text-blue-800">
+                <div style={{ height: '20px' }}>
+                  <Image
+                    src={`/${item.name.toLowerCase()}.png`}
+                    alt={item.name}
+                    width={80}
+                    height={20}
+                    className={styles.mobileImage}
+                  />
+                </div>
+              </Link>
+              {index === 1 && (
+                <div className="-mt-4 -ml-4 flex items-center" style={{ marginTop: '-2px' }}>
+                  <RotatingIcon src="/icons/bow_yarn-1.png" alt="Separator" size={30} />
+                </div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
       </nav>
     );
   }
 
+  // Desktop version remains unchanged
   return (
     <nav className="fixed left-2 w-1/6 flex flex-col justify-center h-screen pl-2 bg-transparent z-10">
       {navItems.map((item) => (

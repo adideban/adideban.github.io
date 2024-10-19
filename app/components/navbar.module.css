@@ -20,7 +20,7 @@
 
 .mobileImage {
     object-fit: contain;
-    height: 100%;
+    max-height: 20px;
     width: auto;
     max-width: 80px;
     cursor: pointer;
