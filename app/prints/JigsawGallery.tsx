@@ -182,7 +182,7 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
                 )}
                 <tr>
                   <td align="center">
-                    <div style={{ color: "#e75480" }}>{image.name}, {image.year}, {image.medium}</div>
+                    <div style={{ color: "red" }}>{image.name}, {image.year}, {image.medium}</div>
                     {/* <div>{image.year}</div>
                     <div>{image.year}</div> */}
                   </td>
