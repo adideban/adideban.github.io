@@ -6,7 +6,6 @@ import Navbar from '../components/navbar';
 import Image from 'next/image';
 import RotatingIcon from '../components/RotatingIcon';
 
-
 export default function About() {
   return (
     <div className="relative min-h-screen">
@@ -24,21 +23,22 @@ export default function About() {
         <RotatingIcon 
           src={"/icons/bow_lace-1.png"} 
           alt="Random Icon 2" 
-          className="absolute top-1/4 right-0 transform translate-x-1/2"
+          className="absolute top-1/4 right-20 transform translate-x-1/2 z-10"
         />
         <div className="w-full max-w-4xl">
-        <RotatingIcon 
-          src={"/icons/bow_lace-2.png"} 
-          alt="Random Icon 3" 
-          className="absolute top-0 left-0 transform -translate-x-1/2"
-        />
+          <RotatingIcon 
+            src={"/icons/lace_spiral-1.png"} 
+            alt="Random Icon 3" 
+            className="absolute top-20 left-20 transform -translate-x-1/2 z-10"
+          />
         
           <AnimatedLetter />
+          
           <RotatingIcon 
-          src={"/icons/bow_yarn-2.png"} 
-          alt="Random Icon 4" 
-          className="absolute top-3/4 right-30 transform translate-x-1/2"
-        />
+            src={"/icons/bow_yarn-2.png"} 
+            alt="Random Icon 4" 
+            className="absolute top-2/4 right-30 transform translate-x-1/2 z-10"
+          />
         </div>
       </main>
     </div>
