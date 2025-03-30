@@ -2,7 +2,6 @@
 
 # Due to Github Deployments
 next.config.mjs
-.env
 
 # dependencies
 /node_modules

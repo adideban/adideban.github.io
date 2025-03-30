@@ -5,6 +5,14 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import Masonry from "react-masonry-css";
 import Link from "next/link";
+import localFont from "next/font/local";
+import { Caveat } from "next/font/google";
+
+const arianaFont = localFont({
+  src: "../../Ariana-Regular.ttf",
+});
+
+const handwrittenFont = Caveat({ subsets:["latin"], weight:"700", });
 
 interface ImageInfo {
   src: string;
@@ -182,7 +190,7 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
                 )}
                 <tr>
                   <td align="center">
-                    <div style={{ color: "red" }}>{image.name}, {image.year}, {image.medium}</div>
+                    <div style={{ color: "red" }} className={arianaFont.className} >{image.name}, <span className={handwrittenFont.className}>{image.year}</span>, {image.medium}</div>
                     {/* <div>{image.year}</div>
                     <div>{image.year}</div> */}
                   </td>

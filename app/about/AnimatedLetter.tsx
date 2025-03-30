@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const AnimatedLetter = () => {
   const [currentFrame, setCurrentFrame] = useState(1);
-  const totalFrames = 5;
+  const totalFrames = 3;
 
   const advanceFrame = () => {
     setCurrentFrame((prevFrame) => {
