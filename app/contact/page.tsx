@@ -5,6 +5,7 @@ import Navbar from '../components/navbar';
 import Image from 'next/image';
 import localFont from "next/font/local";
 import { Caveat } from "next/font/google";
+import RotatingIcon from '../components/RotatingIcon';
 
 const arianaFont = localFont({
   src: "../../Ariana-Regular.ttf",
@@ -75,6 +76,11 @@ export default function Contact() {
       `}</style>
       <Navbar />
       <main className="min-h-screen p-4 md:p-8 pt-24 md:pt-12 flex flex-col items-center">
+        <RotatingIcon 
+            src={"/icons/yarn_spiral-2.png"} 
+            alt="Random Icon 3" 
+            className="absolute top-20 right-20 transform -translate-x-1/2 z-10"
+          />
         <Image
           src="/contact.png"
           alt="CONTACT"
@@ -82,11 +88,37 @@ export default function Contact() {
           height={200}
           className="mx-auto mt-8 md:mt-4 mb-12"
         />
+        <RotatingIcon 
+            src={"/icons/buttons-1.png"} 
+            alt="Random Icon 3" 
+            className="absolute top-15 left-20 transform -translate-x-1/2 z-10"
+            style={{
+              position: 'absolute', 
+              top: '19%', 
+              left: '15%',
+            }}
+          />
         <div className="w-full max-w-md p-8 border-4 shadow-[8px_8px_0_0_rgba(0,0,0,0.3)]" 
              style={{ 
                backgroundColor: 'var(--secondary-color)', 
                borderColor: 'var(--primary-color)' 
              }}>
+              <RotatingIcon 
+            src={"/icons/button.png"} 
+            alt="Random Icon 3" 
+            className="absolute top-25 right-25 transform -translate-x-1/2 z-10"
+          />
+          <RotatingIcon 
+            src={"/icons/bow_yarn-2.png"} 
+            alt="Random Icon 3" 
+            className="absolute z-10 transform rotate-180 translate-x-1/2 translate-y-1/2"
+            style={{
+              position: 'absolute', 
+              bottom: '25%', 
+              right: '25%',
+            }}
+          />
+
               <div className={arianaFont.className} >
           <h2 className="text-2xl font-bold mb-4 text-center " style={{ color: 'var(--primary-color)' }}>get in touch</h2>
           <h3 className='text-xs font mb-4 text-center'> or email me at <a className="underline hover:text-[#D2042D]" href="mailto:ariana.dideban@gmail.com">ariana.dideban<span className={handwrittenFont.className}>@</span>gmail.com</a> !</h3>
