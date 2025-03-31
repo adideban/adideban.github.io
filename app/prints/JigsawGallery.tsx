@@ -12,7 +12,7 @@ const arianaFont = localFont({
   src: "../../Ariana-Regular.ttf",
 });
 
-const handwrittenFont = Caveat({ subsets:["latin"], weight:"700", });
+const handwrittenFont = Caveat({ subsets: ["latin"], weight: "700" });
 
 interface ImageInfo {
   src: string;
@@ -23,8 +23,10 @@ interface ImageInfo {
   name: string;
   year: string;
   medium: string;
+  isLoaded: boolean;
 }
 
+// queue-based loading system
 const getImageDimensions = (filename: string): Promise<{ width: number; height: number }> => {
   return new Promise((resolve) => {
     const img = new window.Image();
@@ -37,8 +39,8 @@ const getImageDimensions = (filename: string): Promise<{ width: number; height: 
 
 const groupImages = (filenames: string[]): Record<string, string[]> => {
   const groups: Record<string, string[]> = {};
-  filenames.forEach(filename => {
-    const [baseName] = filename.split('-');
+  filenames.forEach((filename) => {
+    const [baseName] = filename.split("-");
     if (!groups[baseName]) {
       groups[baseName] = [];
     }
@@ -48,20 +50,20 @@ const groupImages = (filenames: string[]): Record<string, string[]> => {
 };
 
 const parseFilename = (filename: string): { name: string; year: string; medium: string } => {
-  const parts = filename.split('_');
-  const name = parts[0].replace(/-/g, ' ');
+  const parts = filename.split("_");
+  const name = parts[0].replace(/-/g, " ");
   const year = parts[1];
   let medium = parts[2];
-  
+
   // Remove file extension
-  medium = medium.split('.')[0];
-  
+  medium = medium.split(".")[0];
+
   // Remove variant indicator if present
-  const variantIndex = medium.lastIndexOf('-');
+  const variantIndex = medium.lastIndexOf("-");
   if (variantIndex !== -1) {
     medium = medium.substring(0, variantIndex);
   }
-  
+
   return { name, year, medium };
 };
 
@@ -69,6 +71,9 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
   const [images, setImages] = useState<ImageInfo[]>([]);
   const [displayedVariants, setDisplayedVariants] = useState<Record<string, string>>({});
   const [isMobile, setIsMobile] = useState(false);
+  const [loadingQueue, setLoadingQueue] = useState<string[]>([]);
+  const [loadingIndex, setLoadingIndex] = useState(0);
+  const [allImagesQueued, setAllImagesQueued] = useState(false);
 
   useEffect(() => {
     const checkMobile = () => {
@@ -81,37 +86,96 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // prep image metadata and queue first
   useEffect(() => {
-    const loadImages = async () => {
+    const prepareImages = async () => {
       const groupedImages = groupImages(filenames);
-      const imagePromises = Object.entries(groupedImages).map(async ([baseName, variants]) => {
-        const dimensions = await getImageDimensions(variants[0]);
+      // only create metadata initially, don't load all images at once
+      const baseImageData = Object.entries(groupedImages).map(([baseName, variants]) => {
         const { name, year, medium } = parseFilename(variants[0]);
         return {
           src: `/prints/${variants[0]}`,
           variants,
-          ...dimensions,
-          aspectRatio: dimensions.width / dimensions.height,
+          width: 0,  // to be updated when loaded
+          height: 0, // to be updated when loaded
+          aspectRatio: 1, // default placeholder value
           name,
           year,
           medium,
+          isLoaded: false,
         };
       });
 
-      const loadedImages = await Promise.all(imagePromises);
-      setImages(loadedImages);
+      setImages(baseImageData);
+      
+      // then create a loading queue with all base names
+      const queue = baseImageData.map((image) => {
+        const [baseName] = image.src.split('/').pop()!.split('-');
+        return baseName;
+      });
+      
+      setLoadingQueue(queue);
+      setAllImagesQueued(true);
       
       // Initialize displayed variants
       const initialVariants: Record<string, string> = {};
-      loadedImages.forEach(image => {
+      baseImageData.forEach(image => {
         const [baseName] = image.src.split('/').pop()!.split('-');
         initialVariants[baseName] = image.src;
       });
       setDisplayedVariants(initialVariants);
     };
 
-    loadImages();
+    prepareImages();
   }, [filenames]);
+
+  // sequential image loading process
+  useEffect(() => {
+    if (!allImagesQueued || loadingIndex >= loadingQueue.length) return;
+
+    const loadNextImage = async () => {
+      const baseName = loadingQueue[loadingIndex];
+      
+      // find the image data for this base name
+      const imageIndex = images.findIndex((img) => {
+        const imgBaseName = img.src.split('/').pop()!.split('-')[0];
+        return imgBaseName === baseName;
+      });
+      
+      if (imageIndex === -1) {
+        // skip if not found and move to next
+        setLoadingIndex(prev => prev + 1);
+        return;
+      }
+      
+      const image = images[imageIndex];
+      
+      try {
+        // load the image dimensions
+        const dimensions = await getImageDimensions(image.variants[0]);
+        
+        // update the image with dimensions and mark as loaded
+        const updatedImages = [...images];
+        updatedImages[imageIndex] = {
+          ...image,
+          ...dimensions,
+          aspectRatio: dimensions.width / dimensions.height,
+          isLoaded: true,
+        };
+        
+        setImages(updatedImages);
+        
+        // move to the next image
+        setLoadingIndex(prev => prev + 1);
+      } catch (error) {
+        console.error("Failed to load image:", error);
+        // still increment to prevent getting stuck
+        setLoadingIndex(prev => prev + 1);
+      }
+    };
+
+    loadNextImage();
+  }, [loadingIndex, loadingQueue, images, allImagesQueued]);
 
   const breakpointColumnsObj = {
     default: 3,
@@ -129,6 +193,15 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
     return parts && parts.length > 1 ? parts[1].split('.')[0] : '1';
   };
 
+  // loading spinner component
+  const LoadingSpinner = () => (
+    <div className="flex justify-center items-center h-full w-full min-h-[200px]">
+      <div className="animate-spin h-12 w-12">
+        <img src="/loading.png" alt="Loading" className="h-full w-full" />
+      </div>
+    </div>
+  );
+
   return (
     <Masonry
       breakpointCols={breakpointColumnsObj}
@@ -144,20 +217,27 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
               <tbody>
                 <tr>
                   <td align="center">
-                    <Link href={`/print/${baseName}?color=${getColorFromVariant(currentVariant)}`}>
-                      <div style={{ position: 'relative', paddingBottom: `${(1 / image.aspectRatio) * 100}%` }}>
-                        <Image
-                          src={currentVariant || image.src}
-                          alt={`Print ${baseName}`}
-                          layout="fill"
-                          objectFit="contain"
-                          className="retro-image"
-                        />
-                      </div>
-                    </Link>
+                    {image.isLoaded ? (
+                      <Link href={`/print/${baseName}?color=${getColorFromVariant(currentVariant)}`}>
+                        <div style={{ position: 'relative', paddingBottom: `${(1 / image.aspectRatio) * 100}%` }}>
+                          <Image
+                            src={currentVariant || image.src}
+                            alt={`Print ${baseName}`}
+                            layout="fill"
+                            objectFit="contain"
+                            className="retro-image"
+                            loading="lazy"
+                            placeholder="blur"
+                            blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
+                          />
+                        </div>
+                      </Link>
+                    ) : (
+                      <LoadingSpinner />
+                    )}
                   </td>
                 </tr>
-                {image.variants.length > 1 && (
+                {image.variants.length > 1 && image.isLoaded && (
                   <tr>
                     <td align="center">
                       <table cellSpacing="2" cellPadding="0" border={0}>
@@ -178,6 +258,7 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
                                     width={30}
                                     height={30}
                                     className="cursor-pointer"
+                                    loading="lazy"
                                   />
                                 </div>
                               </td>
@@ -190,9 +271,13 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
                 )}
                 <tr>
                   <td align="center">
-                    <div style={{ color: "red" }} className={arianaFont.className} >{image.name}, <span className={handwrittenFont.className}>{image.year}</span>, {image.medium}</div>
-                    {/* <div>{image.year}</div>
-                    <div>{image.year}</div> */}
+                    {image.isLoaded ? (
+                      <div style={{ color: "red" }} className={arianaFont.className}>
+                        {image.name}, <span className={handwrittenFont.className}>{image.year}</span>, {image.medium}
+                      </div>
+                    ) : (
+                      <div className="h-6 w-3/4 mx-auto bg-gray-200 animate-pulse rounded"></div>
+                    )}
                   </td>
                 </tr>
               </tbody>

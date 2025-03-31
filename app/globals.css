@@ -150,3 +150,60 @@ body {
 .retro-variant.mobile {
   cursor: pointer;
 }
+
+/* for new prints page */
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* add a shimmer effect for loading placeholders */
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* added some transition effects for smoother appearance */
+.retro-card {
+  transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+.retro-card.loading {
+  opacity: 0.7;
+  transform: scale(0.98);
+}
