@@ -3,6 +3,14 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Navbar from '../components/navbar';
 import Image from 'next/image';
+import localFont from "next/font/local";
+import { Caveat } from "next/font/google";
+
+const arianaFont = localFont({
+  src: "../../Ariana-Regular.ttf",
+});
+
+const handwrittenFont = Caveat({ subsets:["latin"], weight:"700", });
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -36,15 +44,14 @@ export default function Contact() {
         setFormStatus('Message sent successfully!');
         setFormData({ name: '', email: '', message: '' });
       } else {
-        setFormStatus('Failed to send message. Please try again.');
+        setFormStatus('Failed to send message. Please email directly at ariana.dideban@gmail.com');
       }
     } catch (error) {
-      setFormStatus('An error occurred. Please try again later.');
+      setFormStatus('An error occurred. Please email directly at ariana.dideban@gmail.com ');
     }
   };
-
   return (
-    <div className="relative min-h-screen" style={{
+    <div className="relative min-h-screen " style={{
       '--primary-color': '#D2042D',
       '--secondary-color': '#f0f0f0',
       '--text-color': '#D2042D',
@@ -80,9 +87,10 @@ export default function Contact() {
                backgroundColor: 'var(--secondary-color)', 
                borderColor: 'var(--primary-color)' 
              }}>
-          <h2 className="text-2xl font-bold mb-4 text-center  font-['Arial',sans-serif]" style={{ color: 'var(--primary-color)' }}>get in touch</h2>
-          <h3 className='text-xs font mb-4 text-center'> or email me at <a className="underline hover:text-[#D2042D]" href="mailto:ariana.dideban@gmail.com">ariana.dideban@gmail.com</a> !</h3>
-          <form onSubmit={handleSubmit} className="font-['Courier_New',monospace]">
+              <div className={arianaFont.className} >
+          <h2 className="text-2xl font-bold mb-4 text-center " style={{ color: 'var(--primary-color)' }}>get in touch</h2>
+          <h3 className='text-xs font mb-4 text-center'> or email me at <a className="underline hover:text-[#D2042D]" href="mailto:ariana.dideban@gmail.com">ariana.dideban<span className={handwrittenFont.className}>@</span>gmail.com</a> !</h3>
+          <form onSubmit={handleSubmit} className="">
             <div className="mb-4">
               <label htmlFor="name" className="block mb-2 text-sm font-bold" style={{ color: 'var(--text-color)' }}>name:</label>
               <input
@@ -124,7 +132,7 @@ export default function Contact() {
             </div>
             <button 
               type="submit" 
-              className="w-full py-2 px-4  font-bold transition-all active:translate-x-1 active:translate-y-1 font-['Arial',sans-serif]"
+              className="w-full py-2 px-4  font-bold transition-all active:translate-x-1 active:translate-y-1"
               style={{ 
                 backgroundColor: 'var(--primary-color)', 
                 color: 'white', 
@@ -135,7 +143,7 @@ export default function Contact() {
             </button>
           </form>
           {formStatus && <p className="mt-4 text-center" style={{ color: 'var(--text-color)' }}>{formStatus}</p>}
-
+          </div>
         </div>
       </main>
     </div>
