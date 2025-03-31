@@ -218,7 +218,7 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
                 <tr>
                   <td align="center">
                     {image.isLoaded ? (
-                      <Link href={`/print/${baseName}?color=${getColorFromVariant(currentVariant)}`}>
+                      // <Link href={`/print/${baseName}?color=${getColorFromVariant(currentVariant)}`}>
                         <div style={{ position: 'relative', paddingBottom: `${(1 / image.aspectRatio) * 100}%` }}>
                           <Image
                             src={currentVariant || image.src}
@@ -231,7 +231,7 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
                             blurDataURL="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Crect width='100%25' height='100%25' fill='%23f0f0f0'/%3E%3C/svg%3E"
                           />
                         </div>
-                      </Link>
+                      // </Link>
                     ) : (
                       <LoadingSpinner />
                     )}
