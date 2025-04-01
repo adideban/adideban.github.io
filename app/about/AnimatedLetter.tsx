@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
+import localFont from "next/font/local";
+
+const arianaFont = localFont({
+  src: "../../Ariana-Regular.ttf",
+});
 
 const AnimatedLetter = () => {
   const [currentFrame, setCurrentFrame] = useState(1);
@@ -31,7 +36,8 @@ const AnimatedLetter = () => {
       </div>
       {currentFrame < totalFrames && (
         <div className="text-center mt-1">
-          <span style={{ fontFamily: 'Arial, sans-serif', fontSize: '12px' }}>
+          {/* <span style={{ fontFamily: 'Arial, sans-serif', fontSize: '12px' }}> */}
+          <span style={{ color: "red" }} className={arianaFont.className}>
             click to open
           </span>
         </div>

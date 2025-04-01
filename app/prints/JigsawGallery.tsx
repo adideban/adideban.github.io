@@ -6,13 +6,15 @@ import Image from "next/image";
 import Masonry from "react-masonry-css";
 import Link from "next/link";
 import localFont from "next/font/local";
-import { Caveat } from "next/font/google";
+// import { Caveat } from "next/font/google";
+// import { Inter, Calibri } from 'next/font/google'
 
 const arianaFont = localFont({
   src: "../../Ariana-Regular.ttf",
 });
 
-const handwrittenFont = Caveat({ subsets: ["latin"], weight: "700" });
+// const handwrittenFont = Caveat({ subsets: ["latin"], weight: "700" });
+// const calibriFont = Calibri({ subsets: ["latin"], weight: "700" });
 
 interface ImageInfo {
   src: string;
@@ -273,7 +275,7 @@ export default function JigsawGallery({ filenames }: { filenames: string[] }) {
                   <td align="center">
                     {image.isLoaded ? (
                       <div style={{ color: "red" }} className={arianaFont.className}>
-                        {image.name}, <span className={handwrittenFont.className}>{image.year}</span>, {image.medium}
+                        {image.name}, {image.medium}, <span style={{ fontFamily: 'Calibri, sans-serif !important' }}>{image.year}</span>
                       </div>
                     ) : (
                       <div className="h-6 w-3/4 mx-auto bg-gray-200 animate-pulse rounded"></div>
